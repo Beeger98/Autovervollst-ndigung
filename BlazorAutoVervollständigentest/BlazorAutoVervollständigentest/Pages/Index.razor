@@ -1,0 +1,37 @@
+﻿@page "/"
+
+@code {
+
+    private string[] fruit = { "Ananas", "Apfel", "Banane", "Kirsche", "Orange", "Erdbeere", "Birne", "Tamarind", "Mandarine", "Quitte", "Zwetschge", "Waaahlnuss" };
+    private List<string> suggestions = new List<string>();
+    private string searchText = "";
+    private void OnInput(ChangeEventArgs e)
+    {
+        var input = e.Value.ToString().ToLower();
+
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            suggestions.Clear();
+            return;
+        }
+
+        suggestions = fruit.Where(option => option.ToLower().Contains(input)).ToList();
+    }
+
+    private void Choose(string suggestion)
+    {
+        searchText = suggestion;
+        suggestions.Clear();
+    }
+}
+
+<PageTitle>Autovervollständigungsdings</PageTitle>
+
+<input @bind="searchText" @oninput="OnInput" />
+
+<ul>
+    @foreach (var suggestion in suggestions)
+    {
+        <li @onclick="() => Choose(suggestion)">@suggestion</li>
+    }
+</ul>
