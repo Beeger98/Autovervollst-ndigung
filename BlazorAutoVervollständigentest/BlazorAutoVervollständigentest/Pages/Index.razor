@@ -1,21 +1,59 @@
 ﻿@page "/"
+@using System.Timers
+@using System.Diagnostics
 
 @code {
 
     private string[] fruit = { "Ananas", "Apfel", "Banane", "Kirsche", "Orange", "Erdbeere", "Birne", "Tamarind", "Mandarine", "Quitte", "Zwetschge", "Waaahlnuss" };
     private List<string> suggestions = new List<string>();
+    private Stopwatch inputTimer = new Stopwatch();
     private string searchText = "";
     private void OnInput(ChangeEventArgs e)
     {
-        var input = e.Value.ToString().ToLower();
-
-        if (string.IsNullOrWhiteSpace(input))
+        if (e.Value.ToString().Length >= 3)
         {
-            suggestions.Clear();
-            return;
+            if (inputTimer.IsRunning)
+            {
+                inputTimer.Reset();
+            }
+            inputTimer.Start();
+   
+    //    inputTimer.Reset();
+    // Während Elapsed kleiner 300 mach nix
+            while (inputTimer.ElapsedMilliseconds < 3000)
+            {
+            
+            }
+            inputTimer.Reset();
+            var input = e.Value.ToString().ToLower();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                suggestions.Clear();
+                return;
+            }
+
+            suggestions = fruit.Where(option => option.ToLower().Contains(input)).ToList(); 
+
+        }
+        else
+        {
+            var input = e.Value.ToString().ToLower();
+
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                suggestions.Clear();
+                return;
+            }
+
+            suggestions = fruit.Where(option => option.ToLower().Contains(input)).ToList();
         }
 
-        suggestions = fruit.Where(option => option.ToLower().Contains(input)).ToList();
+
+        return;
+
+
+
     }
 
     private void Choose(string suggestion)
